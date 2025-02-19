@@ -8,8 +8,9 @@ export const usersTable = sqliteTable("users_table", {
 });
 
 export const webhookUserReadedNewslettersTable = sqliteTable("webhook_user_readed_newsletters_table", {
-    email: text().notNull().unique().primaryKey(),
-    id: text().notNull(),
+    id: int().primaryKey({ autoIncrement: true }),
+    email: text().notNull(),
+    id_post: text().notNull(),
     utm_source: text(),
     utm_medium: text(),
     utm_campaign: text(),
@@ -23,6 +24,7 @@ export const usersStreakTable = sqliteTable("users_streak_table", {
     user_id: int().notNull().references(() => usersTable.id),
     streak: int().notNull(),
     best_streak: int().notNull(),
+    total_days_readed: int().notNull().default(0),
     created_at: text(),
     updated_at: text(),
 });

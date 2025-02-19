@@ -39,12 +39,13 @@ webhookApi
                     user_id: createUser[0].id,
                     streak: 1,
                     best_streak: 1,
+                    total_days_readed: 1,
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString()
                 });
 
                 await db.insert(webhookUserReadedNewslettersTable).values({
-                    id: id,
+                    id_post: id,
                     email: email,
                     utm_source: utm_source,
                     utm_medium: utm_medium,
@@ -77,14 +78,21 @@ webhookApi
                 .get()
 
 
+            const userStreakInformations = await db.select().from(usersStreakTable).where(eq(usersStreakTable.user_id, isUserRegistered.id)).get();
+
+            if (!userStreakInformations) {
+                return c.json({ message: "User not found" }, 404);
+            }
+
             if (!hasUserReadeadNewsletterInAValidaDay) {
                 await db.update(usersStreakTable).set({
                     streak: 1,
+                    total_days_readed: userStreakInformations.total_days_readed + 1,
                     updated_at: new Date().toISOString()
                 }).where(eq(usersStreakTable.user_id, isUserRegistered.id)).run();
 
                 await db.insert(webhookUserReadedNewslettersTable).values({
-                    id: id,
+                    id_post: id,
                     email: email,
                     utm_source: utm_source,
                     utm_medium: utm_medium,
@@ -96,22 +104,18 @@ webhookApi
                 return c.json({ message: "Saved Event" }, 201);
             } else {
 
-                const userStreakInformations = await db.select().from(usersStreakTable).where(eq(usersStreakTable.user_id, isUserRegistered.id)).get();
-                if (!userStreakInformations) {
-                    return c.json({ message: "User not found" }, 404);
-                }
-
                 const newStreak = userStreakInformations.streak + 1;
                 const bestStreak = newStreak > userStreakInformations.best_streak ? newStreak : userStreakInformations.best_streak;
 
                 await db.update(usersStreakTable).set({
                     streak: newStreak,
                     best_streak: bestStreak,
+                    total_days_readed: userStreakInformations.total_days_readed + 1,
                     updated_at: new Date().toISOString()
                 }).where(eq(usersStreakTable.user_id, isUserRegistered.id)).run();
 
                 await db.insert(webhookUserReadedNewslettersTable).values({
-                    id: id,
+                    id_post: id,
                     email: email,
                     utm_source: utm_source,
                     utm_medium: utm_medium,
