@@ -22,6 +22,22 @@ webhookApi
                 return c.json({ message: "Id is required" }, 400);
             }
 
+            const today = new Date();
+
+            if (today.getDay() === 0) {
+                return c.json({ message: "Today is Sunday" }, 400);
+            }
+
+            const findUserReadedNewsletterToday = await db.select()
+                .from(webhookUserReadedNewslettersTable)
+                .where(sql`${webhookUserReadedNewslettersTable.email} = ${email} AND substr(${webhookUserReadedNewslettersTable.created_at},1,10) = ${formatDateWithoutHours(today)}`)
+                .get()
+
+            if (findUserReadedNewsletterToday) {
+                return c.json({ message: "User already readed newsletter today" }, 400);
+            }
+
+
             const utm_source = c.req.query('utm_source');
             const utm_medium = c.req.query('utm_medium');
             const utm_campaign = c.req.query('utm_campaign');
@@ -58,7 +74,6 @@ webhookApi
                 return c.json({ message: "Saved Event" }, 201);
             }
 
-            const today = new Date();
             const yesterday = new Date(today);
             yesterday.setDate(today.getDate() - 1);
 
