@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+    --color-supernova-50: #fefce8;
+    --color-supernova-100: #fffac2;
+    --color-supernova-200: #fff387;
+    --color-supernova-300: #ffe443;
+    --color-supernova-400: #ffce04;
+    --color-supernova-500: #efb703;
+    --color-supernova-600: #ce8d00;
+    --color-supernova-700: #a46404;
+    --color-supernova-800: #884e0b;
+    --color-supernova-900: #734010;
+    --color-supernova-950: #432005;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
