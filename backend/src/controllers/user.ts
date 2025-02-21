@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { usersStreakTable, usersTable, webhookUserReadedNewslettersTable } from "../db/schema";
 import { asc, desc, eq, sql } from "drizzle-orm";
 import { formatDateWithoutHours } from "../utils/formatDate";
+import { getMotivationalMessageAndEmoji } from "../utils/motivationalMessagesAndEmoji";
 
 const userApi = new Hono<{ Bindings: Env }>();
 
@@ -32,7 +33,7 @@ userApi
             .orderBy(asc(webhookUserReadedNewslettersTable.created_at))
             .all();
 
-        const getAllUserReadedNewsletterData = allUserReadedNewsletterData.map((data) => {
+        const getAllUserReadedNewsletterDate = allUserReadedNewsletterData.map((data) => {
             if (!data.created_at) return
             return {
                 newsletter_id: data.id,
@@ -60,17 +61,21 @@ userApi
 
         const totalDaysReadedOnCurrentMonth = filterTotalDaysReadedOnCurrentMonth.length
 
+        const motivationalMessageAndEmoji = getMotivationalMessageAndEmoji(userStreak.streak);
+
         return c.json({
             user: {
                 id: findUserRegister.id,
                 email: findUserRegister.email,
+                motivationalMessage: motivationalMessageAndEmoji.message,
+                emoji: motivationalMessageAndEmoji.emoji,
                 streak: userStreak.streak,
                 best_streak: userStreak.best_streak,
                 total_days_readed: userStreak.total_days_readed,
                 percentage_of_days_readed: percentageOfDaysReaded,
                 total_days_readed_on_current_month: totalDaysReadedOnCurrentMonth,
             },
-            newsletters: getAllUserReadedNewsletterData
+            newsletters: getAllUserReadedNewsletterDate
         });
     })
     .get("/users/ranking", async (c) => {
