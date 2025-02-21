@@ -31,9 +31,7 @@ export const usersStreakTable = sqliteTable("users_streak_table", {
 
 export const newslettersTable = sqliteTable("newsletters_table", {
     id: text().primaryKey(),
-    title: text().notNull(),
-    content: text().notNull(),
-    total_users_readed: int().notNull().default(0),
+    total_opened: int().notNull().default(0),
     created_at: text(),
     updated_at: text(),
 });

@@ -2,13 +2,13 @@ import { Hono } from "hono";
 import { Env } from "..";
 import { drizzle } from "drizzle-orm/d1";
 import { usersStreakTable, usersTable, webhookUserReadedNewslettersTable } from "../db/schema";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, sql } from "drizzle-orm";
 import { formatDateWithoutHours } from "../utils/formatDate";
 
 const userApi = new Hono<{ Bindings: Env }>();
 
 userApi
-    .get('/', async (c) => {
+    .get('/user', async (c) => {
         const db = drizzle(c.env.DB);
         const email = c.req.query('email');
         if (!email) {
@@ -73,10 +73,12 @@ userApi
             newsletters: getAllUserReadedNewsletterData
         });
     })
-    .get("/ranking", async (c) => {
+    .get("/users/ranking", async (c) => {
         try {
             const orderBy = c.req.query('orderBy') || "best_streak";
             const orderDir = c.req.query('order') || "desc";
+            const dateFrom = c.req.query('dateFrom');
+            const dateTo = c.req.query('dateTo');
             const page = parseInt(c.req.query('page') || "1", 10);
             const limit = parseInt(c.req.query('limit') || "10", 10);
             const offset = (page - 1) * limit;
@@ -93,19 +95,38 @@ userApi
                 orderClause = orderDir === "asc" ? asc(usersStreakTable.best_streak) : desc(usersStreakTable.best_streak);
             }
 
-            const usersRanking = await db.select({
-                id: usersTable.id,
-                email: usersTable.email,
-                streak: usersStreakTable.streak,
-                best_streak: usersStreakTable.best_streak,
-                total_days_readed: usersStreakTable.total_days_readed,
-            })
-                .from(usersTable)
-                .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
-                .orderBy(orderClause)
-                .limit(limit)
-                .offset(offset)
-                .all();
+            let usersRanking;
+
+            if (dateFrom && dateTo) {
+                usersRanking = await db.select({
+                    id: usersTable.id,
+                    email: usersTable.email,
+                    streak: usersStreakTable.streak,
+                    best_streak: usersStreakTable.best_streak,
+                    total_days_readed: usersStreakTable.total_days_readed,
+                })
+                    .from(usersTable)
+                    .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
+                    .where(sql`${usersStreakTable.created_at} BETWEEN ${dateFrom} AND ${dateTo}`)
+                    .orderBy(orderClause)
+                    .limit(limit)
+                    .offset(offset)
+                    .all();
+            } else {
+                usersRanking = await db.select({
+                    id: usersTable.id,
+                    email: usersTable.email,
+                    streak: usersStreakTable.streak,
+                    best_streak: usersStreakTable.best_streak,
+                    total_days_readed: usersStreakTable.total_days_readed,
+                })
+                    .from(usersTable)
+                    .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
+                    .orderBy(orderClause)
+                    .limit(limit)
+                    .offset(offset)
+                    .all();
+            }
 
             return c.json({ data: usersRanking, page, limit });
 

@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { drizzle } from 'drizzle-orm/d1';
-import { usersStreakTable, usersTable, webhookUserReadedNewslettersTable } from '../db/schema';
+import { newslettersTable, usersStreakTable, usersTable, webhookUserReadedNewslettersTable } from '../db/schema';
 import { eq, sql } from 'drizzle-orm';
 import { Env } from "..";
 import { formatDateWithoutHours } from "../utils/formatDate";
@@ -20,6 +20,22 @@ webhookApi
             const id = c.req.query('id');
             if (!id) {
                 return c.json({ message: "Id is required" }, 400);
+            }
+
+            const isNewsletterRegistered = await db.select().from(newslettersTable).where(eq(newslettersTable.id, id)).get();
+
+            if (!isNewsletterRegistered) {
+                await db.insert(newslettersTable).values({
+                    id: id,
+                    total_opened: 1,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                });
+            } else {
+                await db.update(newslettersTable).set({
+                    total_opened: isNewsletterRegistered.total_opened + 1,
+                    updated_at: new Date().toISOString()
+                }).where(eq(newslettersTable.id, id)).run();
             }
 
             const today = new Date();

@@ -8,6 +8,6 @@ export interface Env {
 
 const app = new Hono();
 app.route('/', webhookApi);
-app.route('/user', userApi)
+app.route('/', userApi)
 
 export default app
