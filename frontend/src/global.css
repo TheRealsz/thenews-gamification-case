@@ -119,7 +119,6 @@
     }
 }
 
-.rdp-root {
-    --rdp-day-width: 19rem;
-    --rdp-day-height: 19rem;
+.rdp-caption_start .rdp-caption_end {
+    width: 100% !important;
 }
