@@ -2,13 +2,16 @@ import { useNavigate } from "react-router";
 import { TheNewsIcon } from "../../assets/svg/the-news-icon";
 import { LogOut } from 'lucide-react';
 import { SmilingFaceWithSunglasses } from "../../assets/svg/smiling-face-with-sunglasses";
+import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
 
 export function Home() {
 
     const navigate = useNavigate()
+    const [date, setDate] = useState<Date | undefined>(new Date())
 
-    const date = new Date()
-    const hours = date.getHours()
+    const today = new Date()
+    const hours = today.getHours()
     let timeOfTheDay = ""
 
     if (hours >= 0 && hours < 12) {
@@ -45,6 +48,15 @@ export function Home() {
                             Você está voando! Essa consistência está te levando a um novo nível!
                         </p>
                     </div>
+                </div>
+                <div className="w-full h-full flex">
+                    <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        className="border rounded-md w-full h-full"
+                        showOutsideDays 
+                    />
                 </div>
             </main>
             <footer className="fixed bottom-0 w-full flex justify-center items-center bg-zinc-200 p-5">
