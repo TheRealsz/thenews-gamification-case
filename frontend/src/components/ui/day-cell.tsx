@@ -21,9 +21,9 @@ export function DayCell(props: DayProps) {
         <div className={`w-full h-10 flex justify-center items-center rounded-md relative ${today.getTime() == props.date.getTime() ? "bg-supernova-400 text-zinc-900" : "text-zinc-500"}`}>
             {
                 isPastOrToday && isBookedDay ? (
-                    <FireStreak className="absolute top-0.5 right-0.5" />
+                    <FireStreak className="absolute top-0.5 right-2 lg:size-4" />
                 ) : (
-                    isPastOrToday && <SnowFlakeStreak className="absolute top-0.5 right-0.5" />
+                    isPastOrToday && <SnowFlakeStreak className="absolute top-0.5 right-2 lg:size-4" />
                 )
             }
             {props.date.getDate()}
