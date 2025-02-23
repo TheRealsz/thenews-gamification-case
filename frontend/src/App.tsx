@@ -1,9 +1,15 @@
+import { UserProvider } from "./contexts/user-context"
 import { Router } from "./router"
+import { ToastContainer } from 'react-toastify';
+
 
 function App() {
 
   return (
-    <Router />
+    <UserProvider>
+      <Router />
+      <ToastContainer />
+    </UserProvider>
   )
 }
 

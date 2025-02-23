@@ -13,17 +13,22 @@ userApi
         const db = drizzle(c.env.DB);
         const email = c.req.query('email');
         if (!email) {
-            return c.json({ message: "Email is required" }, 400);
+            return c.json({ message: "Email é obrigatório" }, 400);
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return c.json({ message: "O email informado é inválido" }, 400);
         }
 
         const findUserRegister = await db.select().from(usersTable).where(eq(usersTable.email, email)).get();
         if (!findUserRegister) {
-            return c.json({ message: "User not found" }, 404);
+            return c.json({ message: "Usuario não encontrado" }, 404);
         }
 
-        const userStreak = await db.select().from(usersStreakTable).where(eq(usersStreakTable.id, findUserRegister.id)).get();
+        const userStreak = await db.select().from(usersStreakTable).where(eq(usersStreakTable.user_id, findUserRegister.id)).get();
         if (!userStreak) {
-            return c.json({ message: "User streak not found" }, 404);
+            return c.json({ message: "Usuario não encontrado" }, 404);
         }
 
         const allUserReadedNewsletterData = await db
@@ -64,19 +69,17 @@ userApi
         const motivationalMessageAndEmoji = getMotivationalMessageAndEmoji(userStreak.streak);
 
         return c.json({
-            user: {
-                id: findUserRegister.id,
-                email: findUserRegister.email,
-                motivationalMessage: motivationalMessageAndEmoji.message,
-                emoji: motivationalMessageAndEmoji.emoji,
-                streak: userStreak.streak,
-                best_streak: userStreak.best_streak,
-                total_days_readed: userStreak.total_days_readed,
-                percentage_of_days_readed: percentageOfDaysReaded,
-                total_days_readed_on_current_month: totalDaysReadedOnCurrentMonth,
-            },
+            id: findUserRegister.id,
+            email: findUserRegister.email,
+            motivationalMessage: motivationalMessageAndEmoji.message,
+            emoji: motivationalMessageAndEmoji.emoji,
+            streak: userStreak.streak,
+            best_streak: userStreak.best_streak,
+            total_days_readed: userStreak.total_days_readed,
+            percentage_of_days_readed: percentageOfDaysReaded,
+            total_days_readed_on_current_month: totalDaysReadedOnCurrentMonth,
             newsletters: getAllUserReadedNewsletterDate
-        });
+        }, 200);
     })
     .get("/users/ranking", async (c) => {
         try {
@@ -137,7 +140,7 @@ userApi
 
         } catch (error) {
             console.error(error)
-            return c.json({ message: "Internal server error" }, 500);
+            return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);
         }
     })
 

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { TheNewsIcon } from "../../assets/svg/the-news-icon";
 import { LogOut } from 'lucide-react';
 import { SmilingFaceWithSunglasses } from "../../assets/svg/smiling-face-with-sunglasses";
@@ -16,6 +16,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
 
 export function Home() {
+    const location = useLocation()
 
     const navigate = useNavigate()
 
@@ -82,7 +83,6 @@ export function Home() {
                             numberOfMonths={numberOfMonths}
                             className="border rounded-md w-full h-full"
                             locale={ptBR}
-                            showOutsideDays
                             components={{
                                 Day: DayCell
                             }}

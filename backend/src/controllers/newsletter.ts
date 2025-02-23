@@ -11,7 +11,7 @@ newsletterApi
         try {
             const db = drizzle(c.env.DB);
 
-            const period = c.req.query('period') || "week"
+            const period = c.req.query('period') ?? "week"
 
             let result;
             const today = new Date();
@@ -52,13 +52,13 @@ newsletterApi
                     .orderBy(sql`strftime('%H', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                     .all();
             } else {
-                return c.json({ message: "Invalid period parameter" }, 400);
+                return c.json({ message: "Parametro de periodo invalido" }, 400);
             }
 
             return c.json(result, 200);
         } catch (error) {
             console.error("Error processing newsletters:", error);
-            return c.json({ message: "Internal Server Error" }, 500);
+            return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);
         }
     });
 

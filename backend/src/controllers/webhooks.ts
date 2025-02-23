@@ -14,12 +14,12 @@ webhookApi
 
             const email = c.req.query('email');
             if (!email) {
-                return c.json({ message: "Email is required" }, 400);
+                return c.json({ message: "Email é obrigatório" }, 400);
             }
 
             const id = c.req.query('id');
             if (!id) {
-                return c.json({ message: "Id is required" }, 400);
+                return c.json({ message: "ID é obrigatório" }, 400);
             }
 
             const isNewsletterRegistered = await db.select().from(newslettersTable).where(eq(newslettersTable.id, id)).get();
@@ -41,7 +41,7 @@ webhookApi
             const today = new Date();
 
             if (today.getDay() === 0) {
-                return c.json({ message: "Today is Sunday" }, 400);
+                return c.json({ message: "Hoje é domingo, não é possivel registrar o evento" }, 400);
             }
 
             const findUserReadedNewsletterToday = await db.select()
@@ -50,7 +50,7 @@ webhookApi
                 .get()
 
             if (findUserReadedNewsletterToday) {
-                return c.json({ message: "User already readed newsletter today" }, 400);
+                return c.json({ message: "Usuario já leu a newsletter hoje" }, 400);
             }
 
 
@@ -87,7 +87,7 @@ webhookApi
                     updated_at: new Date().toISOString()
                 });
 
-                return c.json({ message: "Saved Event" }, 201);
+                return c.json({ message: "Evento registrado" }, 201);
             }
 
             const yesterday = new Date(today);
@@ -112,7 +112,7 @@ webhookApi
             const userStreakInformations = await db.select().from(usersStreakTable).where(eq(usersStreakTable.user_id, isUserRegistered.id)).get();
 
             if (!userStreakInformations) {
-                return c.json({ message: "User not found" }, 404);
+                return c.json({ message: "Usuario não encontrado" }, 404);
             }
 
             if (!hasUserReadeadNewsletterInAValidaDay) {
@@ -132,7 +132,7 @@ webhookApi
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString()
                 });
-                return c.json({ message: "Saved Event" }, 201);
+                return c.json({ message: "Evento registrado" }, 201);
             } else {
 
                 const newStreak = userStreakInformations.streak + 1;
@@ -155,11 +155,11 @@ webhookApi
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString()
                 });
-                return c.json({ message: "Saved Event" }, 201);
+                return c.json({ message: "Evento registrado" }, 201);
             }
         } catch (error) {
             console.error("Error processing webhook:", error);
-            return c.json({ message: "Internal Server Error" }, 500);
+            return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);
         }
     });
 
