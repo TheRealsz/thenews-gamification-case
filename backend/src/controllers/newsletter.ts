@@ -15,8 +15,10 @@ newsletterApi
 
             let result;
             const today = new Date();
+            const todayUTC = new Date(today.toISOString());
+
             if (period === "week") {
-                const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+                const lastWeek = new Date(todayUTC.getFullYear(), todayUTC.getMonth(), todayUTC.getDate() - 7);
                 result = await db
                     .select({
                         date: sql`DATE(${webhookUserReadedNewslettersTable.created_at})`.as("date"),
@@ -28,7 +30,7 @@ newsletterApi
                     .orderBy(sql`DATE(${webhookUserReadedNewslettersTable.created_at}) ASC`)
                     .all();
             } else if (period === "month") {
-                const lastYear = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+                const lastYear = new Date(todayUTC.getFullYear() - 1, todayUTC.getMonth(), todayUTC.getDate());
                 result = await db
                     .select({
                         date: sql`strftime('%Y-%m', ${webhookUserReadedNewslettersTable.created_at})`.as("date"),
@@ -40,7 +42,7 @@ newsletterApi
                     .orderBy(sql`strftime('%Y-%m', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                     .all();
             } else if (period === "day") {
-                const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+                const yesterday = new Date(todayUTC.getTime() - 24 * 60 * 60 * 1000);
                 result = await db
                     .select({
                         date: sql`strftime('%H', ${webhookUserReadedNewslettersTable.created_at})`.as("date"),

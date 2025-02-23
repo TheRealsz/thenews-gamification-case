@@ -1,29 +1,60 @@
 import { useLocation, useNavigate } from "react-router";
 import { TheNewsIcon } from "../../assets/svg/the-news-icon";
 import { LogOut } from 'lucide-react';
-import { SmilingFaceWithSunglasses } from "../../assets/svg/smiling-face-with-sunglasses";
 import { Calendar } from "@/components/ui/calendar";
 import { ptBR } from 'date-fns/locale';
 import { DayCell } from "@/components/ui/day-cell";
 import { FireStreak } from "@/assets/svg/fire-streak";
 import { SnowFlakeStreak } from "@/assets/svg/snow-flake-streak";
 import { Card } from "@/components/ui/card";
-import { CheckMarkIcon } from "@/assets/svg/check-mark";
-import { FirstPlaceMedalIcon } from "@/assets/svg/first-place-medal";
-import { PercentageIcon } from "@/assets/svg/percentage";
-import { BookOpenedIcon } from "@/assets/svg/book-opened";
+import { CheckMark } from "@/assets/svg/check-mark";
+import { FirstPlaceMedal } from "@/assets/svg/first-place-medal";
+import { Percentage } from "@/assets/svg/percentage";
+import { BookOpened } from "@/assets/svg/book-opened";
 import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
+import { IUser, useUser } from "@/contexts/user-context";
+import api from "@/service/api";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Skeleton } from "@/components/ui/skeleton";
+import { emojis } from "@/utils/emojis";
 
 export function Home() {
-    const location = useLocation()
-
-    const navigate = useNavigate()
-
+    const { user, setUser } = useUser()
+    const [loading, setLoading] = useState(false);
     const [timeOfTheDay, setTimeOfTheDay] = useState("");
     const [numberOfMonths, setNumberOfMonths] = useState(1);
+    const location = useLocation()
+    const navigate = useNavigate()
+
+    async function getUserInformation(email: string) {
+        setLoading(true);
+        try {
+            const response = await api.get(`/user?email=${email}`);
+            setUser(response.data)
+            setLoading(false);
+        } catch (e) {
+            if (axios.isAxiosError(e)) {
+                console.error("Axios error:", e.response?.data || e.message);
+                toast.error(e.response?.data?.message || "Aconteceu um erro inesperado, tente novamente mais tarde");
+            } else {
+                console.error("Unexpected error:", e);
+                toast.error("Aconteceu um erro inesperado, tente novamente mais tarde");
+            }
+            setTimeout(() => {
+                setLoading(false);
+                navigate("/login")
+            }, 3000)
+        }
+    }
 
     useEffect(() => {
+        if (!user || location.pathname !== `/${user.email}`) {
+            const email = location.pathname.replace("/", "");
+            getUserInformation(email)
+        }
+
         const today = new Date();
         const hours = today.getHours();
 
@@ -36,10 +67,8 @@ export function Home() {
         }
     }, []);
 
-    const today = new Date()
-    const hours = today.getHours()
-
     const handleGoBackToLoginPage = () => {
+        setUser({} as IUser);
         navigate("/login")
     }
 
@@ -70,39 +99,61 @@ export function Home() {
                         </h1>
                         <div className="flex flex-col gap-2">
                             <p className="leading-6 text-lg lg:text-xl">
-                                Sua sequência atual de <span className="text-supernova-400 font-bold">STREAKS</span> é de <span className="text-supernova-400 font-bold inline-flex items-center gap-1">22 dias <SmilingFaceWithSunglasses className="size-6" /></span>
+                                Sua sequência atual de <span className="text-supernova-400 font-bold">STREAKS</span> é de {" "}
+                                {
+                                    loading ? (
+                                        <Skeleton className="w-24 h-6 inline-flex -mb-1" />
+                                    ) : (
+                                        <span className="text-supernova-400 font-bold inline-flex items-center gap-1">
+                                            {user?.streak} dias
+                                            {emojis[user?.emoji]}
+                                        </span>
+                                    )
+                                }
                             </p>
                             <p className="leading-6 text-zinc-600 lg:text-lg">
-                                Você está voando! Essa consistência está te levando a um novo nível!
+                                {
+                                    loading ? (
+                                        <Skeleton className="w-full h-5" />
+                                    ) : (
+                                        user?.motivational_message
+                                    )
+                                }
                             </p>
                         </div>
                     </div>
                     <div className="w-full h-full flex flex-col gap-7">
-                        <Calendar
-                            mode="default"
-                            numberOfMonths={numberOfMonths}
-                            className="border rounded-md w-full h-full"
-                            locale={ptBR}
-                            components={{
-                                Day: DayCell
-                            }}
-                            classNames={{
-                                months: "flex flex-col sm:flex-row gap-5 lg:gap-10",
-                                month: "flex-1",
-                                caption: "flex justify-center py-2 relative items-center w-full",
-                                caption_label: "lg:text-base capitalize",
-                                head_cell: "lg:text-base font-normal text-zinc-600",
-                                cell: "lg:text-lg"
-                            }}
-                            styles={{
-                                cell: {
-                                    width: "100%",
-                                },
-                                head_cell: {
-                                    width: "100%",
-                                },
-                            }}
-                        />
+                        {
+                            loading ? (
+                                <Skeleton className="w-full h-80 sm:h-96" />
+                            ) : (
+                                <Calendar
+                                    mode="default"
+                                    numberOfMonths={numberOfMonths}
+                                    className="border rounded-md w-full h-full"
+                                    locale={ptBR}
+                                    components={{
+                                        Day: (props) => <DayCell {...props} daysReaded={user?.days_readed} />
+                                    }}
+                                    classNames={{
+                                        months: "flex flex-col sm:flex-row gap-5 lg:gap-10",
+                                        month: "flex-1",
+                                        caption: "flex justify-center py-2 relative items-center w-full",
+                                        caption_label: "lg:text-base capitalize",
+                                        head_cell: "lg:text-base font-normal text-zinc-600",
+                                        cell: "lg:text-lg"
+                                    }}
+                                    styles={{
+                                        cell: {
+                                            width: "100%",
+                                        },
+                                        head_cell: {
+                                            width: "100%",
+                                        },
+                                    }}
+                                />
+                            )
+                        }
                         <div className="flex flex-col gap-1">
                             <p className="text-sm text-zinc-600 lg:text-base">
                                 Legenda:
@@ -125,30 +176,52 @@ export function Home() {
                     </div>
                 </main>
                 <div className="grid grid-cols-2 gap-x-6 items-center justify-center gap-y-6 w-full lg:flex">
-                    <Card
-                        icon={<CheckMarkIcon className="size-10 lg:size-12" />}
-                        title="40 dias"
-                        description="totais de leitura"
-                    />
-                    <Card
-                        icon={<FirstPlaceMedalIcon className="size-10 lg:size-11" />}
-                        title="22 dias"
-                        description="Melhor streak"
-                    />
-                    <Card
-                        icon={<PercentageIcon className="size-10 lg:size-11" />}
-                        title="33%"
-                        description="Taxa geral de leitura"
-                    />
-                    <Card
-                        icon={<BookOpenedIcon className="size-10 lg:size-11" />}
-                        title="21 dias"
-                        description="Lidos em fevereiro"
-                    />
+                    {
+                        loading ? (
+                            <>
+                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
+                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
+                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
+                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
+                            </>
+                        ) : (
+                            <>
+                                <Card
+                                    icon={<CheckMark className="size-10 lg:size-12" />}
+                                    title={`${user?.total_days_readed} dias`}
+                                    description="Totais de leitura"
+                                />
+                                <Card
+                                    icon={<FirstPlaceMedal className="size-10 lg:size-11" />}
+                                    title={`${user?.best_streak} dias`}
+                                    description="Melhor streak"
+                                />
+                                <Card
+                                    icon={<Percentage className="size-10 lg:size-11" />}
+                                    title={`${user?.percentage_of_days_readed}%`}
+                                    description="Taxa geral de leitura"
+                                />
+                                <Card
+                                    icon={<BookOpened className="size-10 lg:size-11" />}
+                                    title={`${user?.total_days_readed_on_current_month} dias`}
+                                    description="Lidos neste mês"
+                                />
+                            </>
+                        )
+                    }
                 </div>
                 <footer className="w-full flex justify-center items-center bg-zinc-200 p-5">
-                    <span className="text-zinc-600 text-center text-sm">
-                        Esses dados estão associados ao e-mail <span className="text-cyan-500 underline">robson.diego@email.com</span>
+                    <span className="text-zinc-600 text-center text-sm lg:text-base">
+                        Esses dados estão associados ao e-mail {" "}
+                        <span className="text-cyan-500 underline">
+                            {
+                                loading ? (
+                                    <Skeleton className="w-24 h-5 inline-flex -mb-1" />
+                                ) : (
+                                    ` ${user?.email}`
+                                )
+                            }
+                        </span>
                     </span>
                 </footer>
             </div>

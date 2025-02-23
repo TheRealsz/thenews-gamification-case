@@ -1,21 +1,16 @@
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from 'react';
 
-interface INewsletter {
-    newsletter_id: number;
-    day_readed: string;
-}
-
-interface IUser {
+export interface IUser {
     id: number;
     email: string;
-    motivationalMessage: string;
+    motivational_message: string;
     emoji: string;
     streak: number;
     best_streak: number;
     total_days_readed: number;
     percentage_of_days_readed: number;
     total_days_readed_on_current_month: number;
-    newsletters: INewsletter[] | undefined
+    days_readed: Date[] | undefined
 }
 
 interface IUserContext {
