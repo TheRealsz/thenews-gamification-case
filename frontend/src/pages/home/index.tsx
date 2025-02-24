@@ -1,16 +1,6 @@
 import { useLocation, useNavigate } from "react-router";
 import { TheNewsIcon } from "../../assets/svg/the-news-icon";
 import { LogOut } from 'lucide-react';
-import { Calendar } from "@/components/ui/calendar";
-import { ptBR } from 'date-fns/locale';
-import { DayCell } from "@/components/ui/day-cell";
-import { FireStreak } from "@/assets/svg/fire-streak";
-import { SnowFlakeStreak } from "@/assets/svg/snow-flake-streak";
-import { CardUserInformation } from "@/components/ui/card-user-information";
-import { CheckMark } from "@/assets/svg/check-mark";
-import { FirstPlaceMedal } from "@/assets/svg/first-place-medal";
-import { Percentage } from "@/assets/svg/percentage";
-import { BookOpened } from "@/assets/svg/book-opened";
 import { useMediaQuery } from 'react-responsive';
 import { useEffect, useState } from "react";
 import { IUser, useUser } from "@/contexts/user-context";
