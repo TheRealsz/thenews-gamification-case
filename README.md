@@ -77,21 +77,15 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
 1. **Clonar o Repositório**
     
     ```bash
-    bash
-    CopiarEditar
     git clone https://github.com/TheRealsz/thenews-gamification-case.git
     cd gamificacao-the-news
-    
     ```
     
 2. **Configurar Variáveis de Ambiente**
     - Crie um arquivo `.env.local` e defina:
         
-        ```
-        ini
-        CopiarEditar
+        ```bash
         VITE_API_URL="http://localhost:8787/"
-        
         ```
         
     - Configure também o `wrangler.jsonc` com as informações do seu D1:
@@ -120,8 +114,6 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
     - No diretório do frontend:
         
         ```bash
-        bash
-        CopiarEditar
         npm install
         
         ```
@@ -129,8 +121,6 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
     - No diretório do backend:
         
         ```bash
-        bash
-        CopiarEditar
         npm install
         
         ```
@@ -139,8 +129,6 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
     - Frontend:
         
         ```bash
-        bash
-        CopiarEditar
         npm run dev
         
         ```
@@ -148,8 +136,6 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
     - Backend (usando Wrangler):
         
         ```bash
-        bash
-        CopiarEditar
         npm run dev
         
         ```
@@ -227,7 +213,6 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
     - Criado URLs de teste para simular a abertura de newsletters, por exemplo:
         
         ```
-        CopiarEditar
         https://thenews-gamification-backend.robsondiegoandrade.workers.dev/?email=teste2@exemplo.com&id=post_2025-02-19&utm_source=tech_case&utm_medium=email&utm_campaign=tech_case
         
         ```
