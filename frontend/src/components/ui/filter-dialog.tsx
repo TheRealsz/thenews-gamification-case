@@ -2,7 +2,15 @@ import { Filter } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
 import { DynamicSelect } from "./dynamic-select";
 
-export function FilterDialog() {
+interface IFilterDialog {
+    filters: {
+        orderBy: string;
+        orderDir: string;
+    }
+    setFilters: (filters: { orderBy: string; orderDir: string }) => void;
+}
+
+export function FilterDialog({ filters, setFilters }: IFilterDialog) {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -28,8 +36,9 @@ export function FilterDialog() {
                                     { label: "Melhor sequência", value: "best_streak" },
                                     { label: "Dias lidos", value: "total_days_readed" },
                                 ]}
-                                defaultValue={"best_streak"}
+                                defaultValue={filters.orderBy}
                                 placeholder="Selecione um filtro"
+                                onChangeCallback={(option) => setFilters({ ...filters, orderBy: option })}
                             />
                         </div>
                         <div className="flex flex-col gap-1">
@@ -37,16 +46,14 @@ export function FilterDialog() {
                             <DynamicSelect
                                 label="Selecione uma ordenação"
                                 options={[
-                                    { label: "Crescente", value: "asc" },
-                                    { label: "Decrescente", value: "desc" },
+                                    { label: "Menor para o maior", value: "asc" },
+                                    { label: "Maior para o menor", value: "desc" },
                                 ]}
-                                defaultValue={"desc"}
+                                defaultValue={filters.orderDir}
                                 placeholder="Selecione uma ordenação"
+                                onChangeCallback={(option) => setFilters({ ...filters, orderDir: option })}
                             />
                         </div>
-                        <button className="bg-supernova-400 text-zinc-900 px-4 py-2 rounded-lg font-medium">
-                            Filtrar
-                        </button>
                     </form>
                 </div>
             </DialogContent>

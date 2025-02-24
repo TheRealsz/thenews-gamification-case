@@ -22,15 +22,17 @@ export function UsersStatistic() {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [filters, setFilters] = useState({
-        orderBy: {
-            label: "Melhor sequência",
-            value: "best_streak"
-        },
-        orderDir: {
-            label: "Decrescente",
-            value: "desc"
-        }
+        orderBy: "best_streak",
+        orderDir: "desc"
     })
+
+    const filterOptions: { [key: string]: string } = {
+        streak: "Sequência atual",
+        best_streak: "Melhor sequência",
+        total_days_readed: "Dias lidos",
+        asc: "Menor para o maior",
+        desc: "Maior para o menor"
+    }
 
     async function getUsersInformation() {
         setLoading(true)
@@ -45,10 +47,6 @@ export function UsersStatistic() {
             setLoading(false)
         }
     }
-
-    useEffect(() => {
-        getUsersInformation()
-    }, [])
 
     useEffect(() => {
         getUsersInformation()
@@ -72,14 +70,17 @@ export function UsersStatistic() {
                         </p>
                         <div className="flex gap-2 flex-wrap">
                             <span className="bg-supernova-400 text-zinc-900 px-2 py-1 rounded-lg flex items-center justify-center text-xs">
-                                {filters.orderBy.label}
+                                {filterOptions[filters.orderBy]}
                             </span>
                             <span className="bg-supernova-400 text-zinc-900 px-2 py-1 rounded-lg flex items-center justify-center text-xs">
-                                {filters.orderDir.label}
+                                {filterOptions[filters.orderDir]}
                             </span>
                         </div>
                     </div>
-                    <FilterDialog />
+                    <FilterDialog
+                        filters={filters}
+                        setFilters={setFilters}
+                    />
                 </div>
                 <div className="flex flex-col gap-12">
                     <div className="w-full px-4 lg:hidden">
