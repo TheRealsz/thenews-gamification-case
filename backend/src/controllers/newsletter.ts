@@ -32,10 +32,17 @@ newsletterApi
                 .orderBy(sql`strftime('%w', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                 .all();
 
-            const completeWeekData: IChart[] = weekDays.map((dayName, index) => {
+            const completeWeekData: IChart[] = weekDays.map((day, index) => {
                 const found = weekRaw.find((item) => parseInt(item.day as string, 10) === index);
-                return { label: dayName, total: found ? Number(found.total) : 0 };
+                return { label: day, total: found ? Number(found.total) : 0 };
             });
+
+            const todayIndex = new Date().getUTCDay();
+
+            const reorderedWeekData = [
+                ...completeWeekData.slice(todayIndex + 1),
+                ...completeWeekData.slice(0, todayIndex + 1)
+            ];
 
             const lastYear = new Date(todayUTC);
             lastYear.setUTCFullYear(todayUTC.getUTCFullYear() - 1);
@@ -50,11 +57,19 @@ newsletterApi
                 .orderBy(sql`strftime('%m', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                 .all();
 
+
             const completeMonthData: IChart[] = allMonths.map((m, index) => {
                 const monthStr = (index + 1).toString().padStart(2, "0");
                 const found = monthRaw.find((item) => item.month === monthStr);
                 return { label: m.month, total: found ? Number(found.total) : 0 };
             });
+
+            const monthIndex = todayUTC.getUTCMonth();
+
+            const reorderedMonthData = [
+                ...completeMonthData.slice(monthIndex + 1),
+                ...completeMonthData.slice(0, monthIndex + 1)
+            ];
 
             const yesterday = new Date(todayUTC.getTime() - 24 * 60 * 60 * 1000);
             const dayRaw = await db
@@ -76,7 +91,7 @@ newsletterApi
                     .reduce((acc, item) => acc + Number(item.total), 0),
             }));
 
-            return c.json({ week: completeWeekData, month: completeMonthData, day: completeDayData }, 200);
+            return c.json({ week: reorderedWeekData, month: reorderedMonthData, day: completeDayData }, 200);
         } catch (error) {
             console.error("Erro ao processar dados para gráficos:", error);
             return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);

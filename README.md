@@ -257,6 +257,11 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
 - No total, o desenvolvimento e os testes foram feitos durante 7 dias.
 
 ---
+
+## Informações
+- **Link prototipo:** https://www.figma.com/design/ffpIxOY8CGVQhtMZkaf96x/Untitled?node-id=0-1&p=f&t=F85iqvfGy72mimWu-0
+
+
 ## Contato
 
 - **Nome:** Robson Diego Andrade de Oliveira

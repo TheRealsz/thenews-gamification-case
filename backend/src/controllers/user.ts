@@ -101,7 +101,7 @@ userApi
             }).length;
 
             const motivationalMessageAndEmoji = getMotivationalMessageAndEmoji(updatedStreak.streak);
-
+            
             return c.json({
                 id: findUserRegister.id,
                 email: findUserRegister.email,
