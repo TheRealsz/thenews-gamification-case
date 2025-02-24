@@ -261,6 +261,12 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
 ## Informações
 - **Link prototipo:** https://www.figma.com/design/ffpIxOY8CGVQhtMZkaf96x/Untitled?node-id=0-1&p=f&t=F85iqvfGy72mimWu-0
 
+## Rotas dentro do app
+- **Login:** https://thenews-gamification.vercel.app/login
+- **Home:** https://thenews-gamification.vercel.app/teste8@exemplo.com
+- **Estatisticas de usuarios:** https://thenews-gamification.vercel.app/admin/users
+- **Estatisticas de newsletters:** https://thenews-gamification.vercel.app/admin/newsletters
+
 
 ## Contato
 
