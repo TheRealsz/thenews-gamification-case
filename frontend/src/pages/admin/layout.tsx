@@ -15,7 +15,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex items-center w-full justify-center">
                         <TheNewsIcon className="w-32 h-20 " />
                     </div>
-                    <LogOut className="text-red-500 size-6" />
+                    <LogOut className="text-red-500 size-6 cursor-pointer" />
                 </header>
                 <div className="w-full h-full p-4">
                     {children}

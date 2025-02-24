@@ -5,7 +5,9 @@ import { FilterDialog } from "@/components/ui/filter-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import api from "@/service/api";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface IUsers {
     id: number;
@@ -41,8 +43,14 @@ export function UsersStatistic() {
             setUsers(response.data.usersRanking)
             setCurrentPage(response.data.page)
             setTotalPages(response.data.totalPages)
-        } catch (error) {
-            console.error(error)
+        } catch (e) {
+            if (axios.isAxiosError(e)) {
+                console.error("Axios error:", e.response?.data || e.message);
+                toast.error(e.response?.data?.message || "Aconteceu um erro inesperado, tente novamente mais tarde");
+            } else {
+                console.error("Unexpected error:", e);
+                toast.error("Aconteceu um erro inesperado, tente novamente mais tarde");
+            }
         } finally {
             setLoading(false)
         }
