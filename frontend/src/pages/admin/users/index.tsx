@@ -1,15 +1,14 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { AccordionUsersInformation } from "@/components/ui/accordion-users-information";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DynamicPagination } from "@/components/ui/dynamic-pagination";
 import { FilterDialog } from "@/components/ui/filter-dialog";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TableUsersInformation } from "@/components/ui/table-users-information";
 import api from "@/service/api";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-interface IUsers {
+export interface IUsers {
     id: number;
     email: string;
     streak: number;
@@ -91,81 +90,14 @@ export function UsersStatistic() {
                     />
                 </div>
                 <div className="flex flex-col gap-12">
-                    <div className="w-full px-4 lg:hidden">
-                        <Accordion type="single" collapsible className="w-full mt-5">
-                            {
-                                loading ? (
-                                    <div className="w-full flex flex-col gap-4">
-                                        <Skeleton className="w-full h-10" />
-                                        <Skeleton className="w-full h-10" />
-                                        <Skeleton className="w-full h-10" />
-                                        <Skeleton className="w-full h-10" />
-                                        <Skeleton className="w-full h-10" />
-                                    </div>
-                                ) :
-                                    (
-                                        users.map(
-                                            (item, _) => (
-                                                <AccordionItem key={item.id} value={`item-${item.id}`} className="font-medium">
-                                                    <AccordionTrigger className="text-left">{item.email}</AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <span className="text-muted-foreground">ID: </span>
-                                                        {item.id}
-                                                    </AccordionContent>
-                                                    <AccordionContent>
-                                                        <span className="text-muted-foreground">Streak: </span>
-                                                        {item.streak}
-                                                    </AccordionContent>
-                                                    <AccordionContent>
-                                                        <span className="text-muted-foreground">Melhor Streak: </span>
-                                                        {item.best_streak}
-                                                    </AccordionContent>
-                                                    <AccordionContent>
-                                                        <span className="text-muted-foreground">Total de dias de leitura: </span>
-                                                        {item.total_days_readed}
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            )
-                                        )
-                                    )
-                            }
-                        </Accordion>
-                    </div>
-                    <div className="w-full px-4 overflow-x-auto hidden lg:block">
-                        {
-                            loading ? (
-                                <Skeleton className="w-full h-80" />
-                            ) :
-                                (
-                                    <Table className="w-full table-auto">
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>ID</TableHead>
-                                                <TableHead>Email</TableHead>
-                                                <TableHead>Streak</TableHead>
-                                                <TableHead>Melhor Streak</TableHead>
-                                                <TableHead>Total de dias de leitura</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {
-                                                users.map(
-                                                    (item, _) => (
-                                                        <TableRow className="" key={item.id}>
-                                                            <TableCell className="font-medium">{item.id}</TableCell>
-                                                            <TableCell className="font-medium">{item.email}</TableCell>
-                                                            <TableCell className="font-medium">{item.streak}</TableCell>
-                                                            <TableCell className="font-medium">{item.best_streak}</TableCell>
-                                                            <TableCell className="font-medium">{item.total_days_readed}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                )
-                                            }
-                                        </TableBody>
-                                    </Table>
-                                )
-                        }
-                    </div>
+                    <AccordionUsersInformation
+                        loading={loading}
+                        users={users}
+                    />
+                    <TableUsersInformation
+                        loading={loading}
+                        users={users}
+                    />
                     <DynamicPagination
                         currentPage={currentPage}
                         totalPages={totalPages}
