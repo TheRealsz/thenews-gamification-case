@@ -222,6 +222,20 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
 
 ## Desafios e Melhorias Futuras
 
+### Desafios
+- **Compatibilidade de ORM com Cloudflare Workers**:
+    - Adaptar o uso do Drizzle ORM a um ambiente serverless, garantindo que as queries funcionem sem dependências do Node.js.
+- **Manipulação de Fusos Horários**:
+    - Garantir que todas as datas sejam tratadas como UTC para evitar inconsistências no cálculo de streaks e na comparação de datas.
+- **Integração e Migrações**:
+    - Configurar corretamente o ambiente de migrações com Cloudflare D1 e sincronizar as mudanças entre ambiente local e produção.
+- **Logica na implementação do Webhook**:
+    - Garantir que todas as tabelas relevantes sejam atualizadas com informações coerentes, inibindo erros e construindo o codigo semanticamente para evitar problemas de legibilidade
+- **Estilização do componente de calendario**:
+    - Estilizar os dias com os icones corretos, além de construir a logica para saber quando adicionar ou não os icones.
+
+
+### Melhorias futuras
 - **Melhorias na UI/UX**:
     - Aperfeiçoar a interface do calendário e dashboard.
     - Oferecer nome do usuario para referencia-lo na Home page
@@ -238,6 +252,11 @@ A aplicação está estruturada em um **monorepo** ou em pastas separadas para o
 
 ---
 
+## Tempo de Desenvolvimento e Testes
+- O desenvolvimento do projeto foi realizado ao longo de uma semana intensiva, com foco inicial na modelagem de dados, criaçao de prototipos e criação dos endpoints essenciais (registro via webhook e consulta de métricas).
+- No total, o desenvolvimento e os testes foram feitos durante 7 dias.
+
+---
 ## Contato
 
 - **Nome:** Robson Diego Andrade de Oliveira
