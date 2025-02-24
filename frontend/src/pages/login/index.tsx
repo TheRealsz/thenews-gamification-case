@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import api from "@/service/api";
 import { useState } from "react";
 import { LoaderCircleIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export function Login() {
     const navigate = useNavigate()
@@ -52,18 +53,19 @@ export function Login() {
                     <form onSubmit={loginForm.handleSubmit} className="w-full flex flex-col items-center gap-7 lg:items-end">
                         <div className="w-full flex flex-col lg:gap-0.5 2xl:gap-1">
                             <label htmlFor="email" className="font-medium leading-6 text-zinc-900 2xl:text-lg">Email</label>
-                            <input
+                            <Input
                                 type="email"
                                 name="email"
                                 value={loginForm.values.email}
                                 onChange={loginForm.handleChange}
-                                className="w-full h-10 rounded-sm bg-zinc-50 leading-6 py-2.5 px-2 outline-none border border-zinc-300 2xl:h-11 2xl:text-lg" placeholder="email@exemplo.com"
+                                className="bg-zinc-50 outline-none focus-visible:ring-0 focus-visible:border-none h-10 2xl:h-11 2xl:text-lg"
+                                placeholder="email@exemplo.com"
                             />
                             {loginForm.touched.email && loginForm.errors.email ? (
                                 <span className="text-red-500 text-xs font-medium pt-1 2xl:text-sm 2xl:pt-0">{loginForm.errors.email}</span>
                             ) : null}
                         </div>
-                        <button type="submit" className="w-full h-10 rounded-lg flex gap-1 items-center justify-center py-2.5 bg-supernova-400 leading-6 font-semibold xl:w-2/5 cursor-pointer hover:bg-supernova-300 transition-colors disabled:opacity-70 2xl:h-11 2xl:text-lg" disabled={loading}>
+                        <button type="submit" className="w-full h-10 rounded-lg flex gap-1 items-center justify-center py-2.5 bg-supernova-400 leading-6 font-medium xl:w-2/5 cursor-pointer hover:bg-supernova-300 transition-colors disabled:opacity-70 2xl:h-11 2xl:text-lg" disabled={loading}>
                             {loading && <LoaderCircleIcon className="animate-spin" />}
                             Entrar
                         </button>

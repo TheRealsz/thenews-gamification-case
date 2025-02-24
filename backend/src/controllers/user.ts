@@ -122,10 +122,8 @@ userApi
         try {
             const orderBy = c.req.query('orderBy') ?? "best_streak";
             const orderDir = c.req.query('order') ?? "desc";
-            const dateFrom = c.req.query('dateFrom');
-            const dateTo = c.req.query('dateTo');
             const page = parseInt(c.req.query('page') ?? "1", 10);
-            const limit = parseInt(c.req.query('limit') ?? "10", 10);
+            const limit = 10
             const offset = (page - 1) * limit;
 
             const db = drizzle(c.env.DB);
@@ -140,46 +138,36 @@ userApi
                 orderClause = orderDir === "asc" ? asc(usersStreakTable.best_streak) : desc(usersStreakTable.best_streak);
             }
 
-            let usersRanking;
-
-            if (dateFrom && dateTo) {
-                const dateFromUTC = new Date(dateFrom).toISOString();
-                const dateToUTC = new Date(dateTo).toISOString();
-
-                usersRanking = await db.select({
-                    id: usersTable.id,
-                    email: usersTable.email,
-                    streak: usersStreakTable.streak,
-                    best_streak: usersStreakTable.best_streak,
-                    total_days_readed: usersStreakTable.total_days_readed,
-                })
-                    .from(usersTable)
-                    .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
-                    .where(sql`${usersStreakTable.created_at} BETWEEN ${dateFromUTC} AND ${dateToUTC}`)
-                    .orderBy(orderClause)
-                    .limit(limit)
-                    .offset(offset)
-                    .all();
-            } else {
-                usersRanking = await db.select({
-                    id: usersTable.id,
-                    email: usersTable.email,
-                    streak: usersStreakTable.streak,
-                    best_streak: usersStreakTable.best_streak,
-                    total_days_readed: usersStreakTable.total_days_readed,
-                })
-                    .from(usersTable)
-                    .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
-                    .orderBy(orderClause)
-                    .limit(limit)
-                    .offset(offset)
-                    .all();
+            const totalRecords = await db.select({ count: sql<number>`COUNT(*)` }).from(usersStreakTable).get();
+            if (!totalRecords) {
+                return c.json({ message: "Erro ao obter o total de registros" }, 500);
             }
 
-            return c.json({ data: usersRanking, page, limit });
+            const totalPages = Math.ceil(totalRecords.count / limit);
+
+            const usersRanking = await db.select({
+                id: usersTable.id,
+                email: usersTable.email,
+                streak: usersStreakTable.streak,
+                best_streak: usersStreakTable.best_streak,
+                total_days_readed: usersStreakTable.total_days_readed,
+            })
+                .from(usersTable)
+                .innerJoin(usersStreakTable, eq(usersTable.id, usersStreakTable.user_id))
+                .orderBy(orderClause)
+                .limit(limit)
+                .offset(offset)
+                .all();
+
+            return c.json({
+                usersRanking: usersRanking,
+                page,
+                limit,
+                totalPages
+            }, 200);
 
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);
         }
     })

@@ -6,7 +6,7 @@ import { ptBR } from 'date-fns/locale';
 import { DayCell } from "@/components/ui/day-cell";
 import { FireStreak } from "@/assets/svg/fire-streak";
 import { SnowFlakeStreak } from "@/assets/svg/snow-flake-streak";
-import { Card } from "@/components/ui/card";
+import { CardUserInformation } from "@/components/ui/card-user-information";
 import { CheckMark } from "@/assets/svg/check-mark";
 import { FirstPlaceMedal } from "@/assets/svg/first-place-medal";
 import { Percentage } from "@/assets/svg/percentage";
@@ -186,22 +186,22 @@ export function Home() {
                             </>
                         ) : (
                             <>
-                                <Card
+                                <CardUserInformation
                                     icon={<CheckMark className="size-10 lg:size-12" />}
                                     title={`${user?.total_days_readed} dias`}
                                     description="Totais de leitura"
                                 />
-                                <Card
+                                <CardUserInformation
                                     icon={<FirstPlaceMedal className="size-10 lg:size-11" />}
                                     title={`${user?.best_streak} dias`}
                                     description="Melhor streak"
                                 />
-                                <Card
+                                <CardUserInformation
                                     icon={<Percentage className="size-10 lg:size-11" />}
                                     title={`${user?.percentage_of_days_readed}%`}
                                     description="Taxa geral de leitura"
                                 />
-                                <Card
+                                <CardUserInformation
                                     icon={<BookOpened className="size-10 lg:size-11" />}
                                     title={`${user?.total_days_readed_on_current_month} dias`}
                                     description="Lidos neste mês"
