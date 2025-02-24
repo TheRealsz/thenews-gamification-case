@@ -128,7 +128,7 @@ export function Home() {
                         numberOfMonths={numberOfMonths}
                     />
                 </main>
-                <CardsUserInformationsContainer 
+                <CardsUserInformationsContainer
                     loading={loading}
                     user={user}
                 />
