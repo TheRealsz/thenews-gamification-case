@@ -73,6 +73,7 @@ userApi
                 if (!data.created_at) return
                 return formatDateUTC(data.created_at)
             });
+
             const firstDayReaded = allUserReadedNewsletterData[0]?.created_at;
             if (!firstDayReaded) {
                 return c.json({ message: "Nenhum dia de leitura encontrado" }, 404);
@@ -113,6 +114,7 @@ userApi
                 total_days_readed_on_current_month: daysReadedThisMonth,
                 days_readed: daysReaded
             }, 200);
+            
         } catch (error) {
             console.error("Error processing user:", error);
             return c.json({ message: "Aconteceu um erro inesperado, tente novamente mais tarde" }, 500);

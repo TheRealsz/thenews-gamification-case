@@ -3,7 +3,6 @@ import { drizzle } from 'drizzle-orm/d1';
 import { newslettersTable, usersStreakTable, usersTable, webhookUserReadedNewslettersTable } from '../db/schema';
 import { eq, sql } from 'drizzle-orm';
 import { Env } from "..";
-import { formatDateWithoutHours } from "../utils/formatDate";
 
 const webhookApi = new Hono<{ Bindings: Env }>();
 
