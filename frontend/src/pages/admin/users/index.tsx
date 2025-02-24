@@ -16,7 +16,6 @@ export interface IUsers {
     total_days_readed: number;
 }
 
-
 export function UsersStatistic() {
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState<IUsers[]>([])
