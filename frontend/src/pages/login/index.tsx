@@ -17,6 +17,10 @@ export function Login() {
 
     async function getUserInformation(email: string) {
         setLoading(true);
+        if (email === "admin@thenews.com") {
+            navigate("/admin/users")
+            return
+        }
         try {
             const response = await api.get(`/user?email=${email}`);
             setUser(response.data)

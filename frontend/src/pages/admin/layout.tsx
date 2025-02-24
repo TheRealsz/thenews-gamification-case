@@ -3,8 +3,11 @@ import { AdminSideBar } from "@/components/ui/admin-side-bar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
+    const navigate = useNavigate()
+
     return (
         <SidebarProvider>
             <AdminSideBar />
@@ -15,7 +18,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex items-center w-full justify-center">
                         <TheNewsIcon className="w-32 h-20 " />
                     </div>
-                    <LogOut className="text-red-500 size-6 cursor-pointer" />
+                    <LogOut className="text-red-500 size-6 cursor-pointer" onClick={() => navigate("/login")} />
                 </header>
                 <div className="w-full h-full p-4">
                     {children}
