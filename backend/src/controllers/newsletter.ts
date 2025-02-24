@@ -3,19 +3,10 @@ import { drizzle } from 'drizzle-orm/d1';
 import { webhookUserReadedNewslettersTable } from '../db/schema';
 import { sql } from 'drizzle-orm';
 import { Env } from "..";
+import { allMonths, timeBlocks, weekDays } from "../utils/newsletterTimeLabels";
 
 interface IChart {
     label: string;
-    total: number;
-}
-
-interface IMonthData {
-    month: string;
-    total: number;
-}
-
-interface IDayData {
-    period: string;
     total: number;
 }
 
@@ -41,7 +32,6 @@ newsletterApi
                 .orderBy(sql`strftime('%w', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                 .all();
 
-            const weekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
             const completeWeekData: IChart[] = weekDays.map((dayName, index) => {
                 const found = weekRaw.find((item) => parseInt(item.day as string, 10) === index);
                 return { label: dayName, total: found ? Number(found.total) : 0 };
@@ -59,22 +49,6 @@ newsletterApi
                 .groupBy(sql`strftime('%m', ${webhookUserReadedNewslettersTable.created_at})`)
                 .orderBy(sql`strftime('%m', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                 .all();
-
-            const allMonths = [
-                { month: "Janeiro", total: 0 },
-                { month: "Fevereiro", total: 0 },
-                { month: "Março", total: 0 },
-                { month: "Abril", total: 0 },
-                { month: "Maio", total: 0 },
-                { month: "Junho", total: 0 },
-                { month: "Julho", total: 0 },
-                { month: "Agosto", total: 0 },
-                { month: "Setembro", total: 0 },
-                { month: "Outubro", total: 0 },
-                { month: "Novembro", total: 0 },
-                { month: "Dezembro", total: 0 },
-            ];
-
 
             const completeMonthData: IChart[] = allMonths.map((m, index) => {
                 const monthStr = (index + 1).toString().padStart(2, "0");
@@ -94,12 +68,7 @@ newsletterApi
                 .orderBy(sql`strftime('%H', ${webhookUserReadedNewslettersTable.created_at}) ASC`)
                 .all();
 
-            const timeBlocks = [
-                { label: "00h - 06h", min: 0, max: 6 },
-                { label: "06h - 12h", min: 6, max: 12 },
-                { label: "12h - 18h", min: 12, max: 18 },
-                { label: "18h - 00h", min: 18, max: 24 },
-            ];
+
             const completeDayData: IChart[] = timeBlocks.map((block) => ({
                 label: block.label,
                 total: dayRaw
