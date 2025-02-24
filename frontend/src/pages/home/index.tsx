@@ -19,6 +19,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Skeleton } from "@/components/ui/skeleton";
 import { emojis } from "@/utils/emojis";
+import { UserCalendar } from "@/components/ui/user-calendar";
+import { CardsUserInformationsContainer } from "@/components/ui/cards-user-informations-container";
 
 export function Home() {
     const { user, setUser } = useUser()
@@ -83,8 +85,6 @@ export function Home() {
         }
     }, [isSmallScreen, isMediumScreen]);
 
-
-
     return (
         <div className="w-full h-full flex flex-col justify-start items-center p-5 bg-zinc-200 relative md:px-10 lg:py-7">
             <div className="w-full flex flex-col justify-center items-center gap-9 max-w-6xl lg:gap-12">
@@ -122,94 +122,16 @@ export function Home() {
                             </p>
                         </div>
                     </div>
-                    <div className="w-full h-full flex flex-col gap-7">
-                        {
-                            loading ? (
-                                <Skeleton className="w-full h-80 sm:h-96" />
-                            ) : (
-                                <Calendar
-                                    mode="default"
-                                    numberOfMonths={numberOfMonths}
-                                    className="border rounded-md w-full h-full"
-                                    locale={ptBR}
-                                    components={{
-                                        Day: (props) => <DayCell {...props} daysReaded={user?.days_readed} />
-                                    }}
-                                    classNames={{
-                                        months: "flex flex-col sm:flex-row gap-5 lg:gap-10",
-                                        month: "flex-1",
-                                        caption: "flex justify-center py-2 relative items-center w-full",
-                                        caption_label: "lg:text-base capitalize",
-                                        head_cell: "lg:text-base font-normal text-zinc-600",
-                                        cell: "lg:text-lg"
-                                    }}
-                                    styles={{
-                                        cell: {
-                                            width: "100%",
-                                        },
-                                        head_cell: {
-                                            width: "100%",
-                                        },
-                                    }}
-                                />
-                            )
-                        }
-                        <div className="flex flex-col gap-1">
-                            <p className="text-sm text-zinc-600 lg:text-base">
-                                Legenda:
-                            </p>
-                            <div className="flex flex-col">
-                                <div className="flex items-center gap-1">
-                                    <FireStreak className="size-4 lg:size-5" />
-                                    <span className="text-sm text-zinc-600 lg:text-base">
-                                        Dia com leitura registrada
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <SnowFlakeStreak className="size-4 lg:size-5" />
-                                    <span className="text-sm text-zinc-600 lg:text-base">
-                                        Dia sem leitura registrada
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <UserCalendar
+                        loading={loading}
+                        user={user}
+                        numberOfMonths={numberOfMonths}
+                    />
                 </main>
-                <div className="grid grid-cols-2 gap-x-6 items-center justify-center gap-y-6 w-full lg:flex">
-                    {
-                        loading ? (
-                            <>
-                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
-                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
-                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
-                                <Skeleton className="w-full h-32 col-span-1 lg:h-40" />
-                            </>
-                        ) : (
-                            <>
-                                <CardUserInformation
-                                    icon={<CheckMark className="size-10 lg:size-12" />}
-                                    title={`${user?.total_days_readed} dias`}
-                                    description="Totais de leitura"
-                                />
-                                <CardUserInformation
-                                    icon={<FirstPlaceMedal className="size-10 lg:size-11" />}
-                                    title={`${user?.best_streak} dias`}
-                                    description="Melhor streak"
-                                />
-                                <CardUserInformation
-                                    icon={<Percentage className="size-10 lg:size-11" />}
-                                    title={`${user?.percentage_of_days_readed}%`}
-                                    description="Taxa geral de leitura"
-                                />
-                                <CardUserInformation
-                                    icon={<BookOpened className="size-10 lg:size-11" />}
-                                    title={`${user?.total_days_readed_on_current_month} dias`}
-                                    description="Lidos neste mês"
-                                />
-                            </>
-                        )
-                    }
-                </div>
+                <CardsUserInformationsContainer 
+                    loading={loading}
+                    user={user}
+                />
                 <footer className="w-full flex justify-center items-center bg-zinc-200 p-5">
                     <span className="text-zinc-600 text-center text-sm lg:text-base">
                         Esses dados estão associados ao e-mail {" "}
