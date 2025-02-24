@@ -15,7 +15,7 @@ export function FilterDialog({ filters, setFilters }: IFilterDialog) {
         <Dialog>
             <DialogTrigger asChild>
                 <div className="flex justify-end px-4">
-                    <button className="flex items-center gap-2 bg-supernova-400 text-zinc-900 px-4 py-2 rounded-lg font-medium cursor-pointer">
+                    <button className="flex items-center gap-2 bg-supernova-400 text-zinc-900 px-4 py-2 rounded-lg font-medium cursor-pointer hover:bg-supernova-300 transition-colors">
                         <Filter size={24} className="text-zinc-900" />
                         Filtrar
                     </button>
